@@ -10,7 +10,7 @@ AMySocketImplem::AMySocketImplem()
  	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 	NewMessage = false;
-	BufferList.Init(FString(), 0);
+	
 }
 
 // Called when the game starts or when spawned
@@ -45,6 +45,15 @@ void	AMySocketImplem::EndPlay(EEndPlayReason::Type EndPlayReason)
 void AMySocketImplem::Tick( float DeltaTime )
 {
 	Super::Tick( DeltaTime );
+	
+	if(!BufferList.IsEmpty())
+	{ 
+		FString received;
+		BufferList.Dequeue(received);
+		if(GEngine)
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Receive :%s"),  *received));
+		ParseReceivedMessage(received);
+	}
 }
 
 // Called to bind functionality to input
@@ -113,7 +122,8 @@ void		AMySocketImplem::TCPSocketListener()
 		}
 		if (received)
 		{
-			BufferList.Add(FString::FromInt(i).Append(FString(". ").Append(SocketList[i].Buffer)));
+			BufferList.Enqueue(FString::FromInt(i).Append(FString(". ").Append(SocketList[i].Buffer)));
+			SocketList[i].Buffer =FString();
 			received = false;
 		}
 		i++;
