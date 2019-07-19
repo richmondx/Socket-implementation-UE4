@@ -36,7 +36,7 @@ class SOCKETIMPLEM_API AMySocketImplem : public APawn
 
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Container")
-	TArray<FString> BufferList;
+	TQueue<FString> BufferList;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Notifyer")
 	bool	NewMessage;
 	TArray<FSocketContent>	SocketList;
